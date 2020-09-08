@@ -1,0 +1,1235 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>404 : Road Not Found</title>
+    <style type="text/css">
+      body{
+        background: #444; 
+        display: flex; 
+        margin: 0; 
+        align-items: center; 
+        justify-content: center; 
+        height: 100vh; 
+      }
+    </style>
+  </head>
+  <body>
+    <canvas id="c"></canvas>
+    <script type="text/javascript">
+      // SFX
+
+      const bird1 = "/+MYxAAJoAZAAUAQAP///////////4Pv+XB8HwfeAAQDGsHwflAQBAEIPg+D4PggCAIBhZY03JLZFZVYpQBEV1F1ydiFUuzy/+MYxBQMUAJ6WYEQAJj9nX+jqWj1v+v2PHXsf/sEtv0ce92VhUFf9P+BFRz/////////////ppoIaZfN0y+SBKFwuGhcLhcL/+MYxB0Om2KEEcBoAYPcOWC1hzxoBOBtHu7Ohr/////06C1/WYGo9ypSigb62/qSSSS6tSSTrSXdAySNikUSClAQmC54cYEK/+MYxB0MQ2J8EARFZBa2gszd17f3lR//7pytM5adDHEl/y////f/P/88eY73Vyw5cjL5wAh4b8huCJ9z0HWtYTnLwZOf//4y/+MYxCcJsq5gAAgyuP//+uqcsuWJrGAZkpd0/NNmJdsl1U/fHy9Qdi2qfQp5WCHD8Tcumlj6RSMVaZCYYgF4AIAuhRXH8nI3/+MYxDsOc26AAALxhP/t3OlhLGqX0PXSWdMElVUKzIfwPQjHUx2jCGKZIj60oHD2opROkteCazoFUJiwD0Yo9rxSG5RVDD///+MYxDwOC2qICANzhf//////////////1pqV//9SP9cnibNqkNZdJkd4uMljMoFUpLMhng1MGwoPy6OMmyrP/////////////+MYxD4M+2agEUCAAf//////////7c6YJrTNJuOaMp6JVWiylE8y/r+kpI4DQiCAAGCAKjQMkUC4EQDAzH4Dqhf8hwYRDqIh/+MYxEUXC6JwAYGgAHxDoABQQiQWngFFv9a2JoxICQUvEqHw1f//v//9v//Q3//qX//0N/Uv6lK6lL/+htDGdQoC6lK1SlqU/+MYxCMK42oAAcAQAKVvlKVjAQEJZUxBTUUzLjEwMFVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVV";
+
+      const bird2 = "/+MYxAANQzZUAUCQAP////////TTLhcQQQQ////////////QQQL5fIuMuIDhkcNVkGBuQB3YHJhbMkhlBmCIOlwfgQG//////+MYxAYOs5akEYCIAP//////7f////UgT7//69lFkg5EG/WmpIojGF12/dhqAqzav/0jIji6KIWzb/6lmpFBzjZN/d8//////+MYxAYOm5KoEYBoAP//////1fj8YHj/6mDlicDzP/ooDtIiL9bokkcdv9U8a//o/+40DzZ//6A/GS//6BmS4bjK/////////+MYxAYOw5KgAYCAAP////1Uf/qX/1m40C231N/1JlMQTJxH6VJMwculVvzqRdC7QcIW/82JkyFeHcpJ//zxASdR/////////+MYxAYOI46UAYBQAP////5GF6Mib/NC2PD3/Q8DQNphymmoXFr/PsYqv/YfD0003/uRCOKH//sUJjbf/ohc6v///////////+MYxAgOcypAAcA4Afoccg8co1IjwAwAQtEYBwlEljw2Y45R0asNgfEUOO/////+cccoig9JDo1GpoUM4d8WTEFNRTMuMTAw";
+
+      const bird3 = "/+MYxAAMQrZgAUAoAf////////////ziYfAAAAAAACCinPoQhCN85zv/kIHzj//AAAABwB4ePzP4AfwAAAD//////////////+MYxAoO646MAYBoAUSSHqOT/ycE9/8d4BjJf1GC9yVf7IPW6icn+y9FBFNlIKPOmv/QY0RTSTUz/9SlmWxKND///////////+MYxAkOUxKcEcBoA/6v66kE0kSAxdCYheB5l2PQlDMvug3/9X/mB0l0U6ZfN01IOZl96ZuHgAOPzWwAACoyf4yQBiL6MKXL/+MYxAoNWyqwEABxZ4hf////9yuG3/n2jhx04WAMtrZw7ST0NRbVWlwjV2W1LVrczGbPgqGEFYq12RH//////603WZl8vpIL/+MYxA8OosrMGUCAAnU5giX0i4tMwPmhAxqDKiUg2ENCD1RWqRSNyqccyMUzEwdHf////6KnMjJl////////ROP///9R0aAu/+MYxA8Qcq6IAYBoAAX9TnkGQUEwC1lynZqkkTIvUkugPIxQ9Y+CAD1mSzq1p1WMhjG6Tiupp5SBMQCnz7m/of//////8v9H/+MYxAgNAg3sAcAoAUMZSlYSDzCQecRFSAMATAMAQsoLCYCvxNBeHArYr//8XBSI6LkMy//6b/m6TEFNRTMuMTAwVVVVVVVV";
+
+      const ambient = "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";
+
+      let bird1Buffer, bird2Buffer, bird3Buffer, ambientBuffer, 
+          actx, actxInitialized, birdGain, notesGain, ambientGain;
+
+      // SPRITES
+
+      const SPRITE_MAN_BACK = "!!!!`!!!!!!!!!!!!`6`!!!!!!!!!!``66````!!!!!`66666666`!!!!!`66666666`!!!`6666666666`!!`6666666666`!!``66666666``!`K`6`6666`6`K``KK```66```KK`!`KK``````KK`!!Q`KKKKKKKK`$!!Q=`_KKKKP`.$!!-\\_``````P\\-!-)\\_``````P\\)--,[````````LY-!0O``KF;K``O]!!!0````````]!!!!-Y``````,-!!!!-YIIP_++,-!!!!!-]]Q$00-!!!";
+
+      const SPRITE_MAN_SIDE = "!!!!!`!!!!!!!!!!!!`6`!!!!!!!!!!!`66````!!!!!``6666666``!!`6666666666```66666666``66`!``666``````6`!!`66`````````!!`6`````KKKK`!!``````KK`KK`!!!``KK`KK`KK`!!!`KKKKKKKK`!!!!!``KKKK``!!!!!`KK``K``!!!!!`KKK```PL`!!!!`KK`````PPT!!!!`K```KK6PS$!!TC```````SCT!!TCC`````_CDQ!!!TS/,)-]LPQ!!!!!$$----]Q!!";
+
+      const SPRITE_MAN_FRONT = "!!!!!!!!!`!!!!!!!!!!!!`6`!!!!!!!````66``!!!!!`66666666`!!!`66666666`!!!!``66``66``!!!````6666````!!````````````!`K`KKKKKKKK`K``KKKK`KK`KKKK`!`KKK`KK`KKK`!!$_KKKKKKKKPQ!$#```KKKK```AQ$_LP``````_[PQ-\\\\````````\\\\--YIP``````_+,-!]MP`JKG;`_/0!!!]````````0!!!!-,___PPPY-!!!!-,++_PIIY-!!!!!-00$Q]]-!!!";
+
+      const SPRITE_TREE = "!!!+'++*++'%%%)!!!#+&J6F&&&))%)!!##;FJ:GGF&++%!!!++;F:;;7JJKK'#!#++;GKKKGK?:JG###**;GKLKG[O;:JJ##:6;;\\POG[O[:FJ#CJG7GZPPK[N[JGJCCKG;KZ`PK[O[KG;C3;7;KK`PL[O[JJ:KAIF7GK``P__SJFEIAIEGGK```]AC23AAA99IKK]`TDAAAAAA!!111!]`$$A1111A!!!!!!``$$DAA!!!!!!!$```0$$$!!!!";
+
+      const SPRITE_COIN = "!!!!!````!!!!!!!!$0[KK[0$!!!!!$#/\\PL\\/#$!!!$#/,_KO[,/#$!!$#0+_KP[+.#$!$#$/+_JO\\+/\"#$$#$/+^:?\\+/\"#$$#$/+_:?\\+/\"#$$#$/+_^W`//\"#$!$#0+_^V`/.#$!!$#/*[[W_./#$!!!$#/ZV^^/#$!!!!!$0[[__0$!!!!!!!!````!!!!!";
+
+      const SPRITE_ICONS = "!!!$$-]]-$$!!!!$$//XUUX00$$!!$/'W[<<[W'0$!$/'ZW7777W['0$$/&ZV7_W7W['0$0'[V77_W77W[(00'[W77_W77W[(00W[777__??7[X0-X[77777777\\X-Q]8;77WW77<8]QQ]5<77WW78<5]QQQ=58;;;<85=QQQQQ]]XWXX]]QQQ!QQQQ]``]QQQQ!";
+
+      const SPRITE_VIRUS_HOUSE_GRASS = "]000--0//--00---!-(%%%%(%%(((%-!!-(()%((((%%%%-$#-%),,''/'0(-(/##0((+'''''''((-$$-%('&&&'&&'(%-A--0/...//..0/0-0!-('&&'''((('(0$$-('&&(''''''(-$#0('**,(''+++(-!3-%(+**&''*+<(0$!M%(K++''7KK,%-$!=H((H'''G,,,(-!!-8E%H((H()))8=!-08E%(%%%())LG/-----//0-000-----";
+
+      const FONT_3PX = "_`U`!,`S<`\",`?6`\\L]\";]J[?2C`HXPRP?2O+V+':GW\\W000.A/.0.(A.0>.";
+      const FONT_4PX = "H=](`!C>PDRN01K.@=]@";
+      const FONT_5PX = "_DBD`@%#A?8)X*88I1-8WRJRX";
+
+
+      // SPRITE FRAMES
+
+      const front_frames = decode(SPRITE_MAN_FRONT, 21, 14);
+      const back_frames = decode(SPRITE_MAN_BACK, 21, 14);
+      const side_frames_right = decode(SPRITE_MAN_SIDE, 21, 14);
+      const side_frames_left = side_frames_right.map(mirrorFrame);
+
+      const tree_frames = decode(SPRITE_TREE, 16, 16);
+      tree_frames.push(...tree_frames.map(mirrorFrame));
+
+      const coin_frames = decode(SPRITE_COIN, 14, 14);
+      coin_frames.push(mirrorFrame(coin_frames[1]));
+
+      const [heart, clock, warning] = decode(SPRITE_ICONS, 14, 14);
+      const [virus, house, grass] = decode(SPRITE_VIRUS_HOUSE_GRASS, 16, 16);
+
+      const font_3px_arr = decode(FONT_3PX, 5, 3, 1, 1);
+      const font_4px_arr = decode(FONT_4PX, 5, 4, 1, 1);
+      const font_5px_arr = decode(FONT_5PX, 5, 5, 1, 1);
+      const SPACE_CHAR = get2darr(5, 3, 0);
+
+      const char_map_3px = stringToCharMap('ABCDEFIJLPRSTUXY136789.:');
+      const char_map_4px = stringToCharMap('HKOQ24');
+      const char_map_5px = stringToCharMap('GMNVWZ');
+
+      // COLORS
+
+      const COLOR_TRANSPARENT = 'rgba( 0, 0, 0, 0 )';
+      const COLOR_WHITE = '#fff';
+      const COLOR_DARK_GRAY = 'rgba( 85, 85, 85, 1 )';
+      const COLOR_DARK_OVERLAY = '#000a';
+      const COLOR_MEDIUM_OVERLAY = '#0006';
+
+      const COLOR_CHAMPAIGN = '#fed';
+      const COLOR_SCARLET = '#f20';
+      const COLOR_BRONZE = '#d84';
+      const COLOR_ORANGE_OVERLAY = '#fd04';
+      const COLOR_RED_OVERLAY = '#f008';
+      const COLOR_VIOLET_OVERLAY = '#81e8';
+
+      const COLOR_LIGHT_GOLD = '#ffd';
+      const COLOR_GOLD = '#fd0';
+      const COLOR_GOLDEN_BROWN = '#963';
+      const COLOR_DONKEY_BROWN = '#a97';
+
+      const COLOR_SLATE_BLUE = '#87f';
+
+      const COLOR_PIXIE_GREEN = '#bdb';
+      const COLOR_SPROUT = '#ac9';
+      const COLOR_BUDDHA_GOLD = '#ba0';
+      const COLOR_DRIFTWOOD = '#a84';
+      const COLOR_HUSK = '#aa4';
+      const COLOR_FLAX = '#ed8';
+      const COLOR_SAND = '#cc9';
+      const COLOR_SHADOW_GREEN = '#9ca';
+      const COLOR_TUMBLEWEED = '#da7';
+
+      const TREE_COLOR_SCHEMES = [
+        [COLOR_PIXIE_GREEN, COLOR_SPROUT, COLOR_DONKEY_BROWN],
+        [COLOR_PIXIE_GREEN, COLOR_BUDDHA_GOLD, COLOR_DRIFTWOOD], 
+        [COLOR_SAND, COLOR_SHADOW_GREEN, COLOR_DRIFTWOOD], 
+        [COLOR_SAND, COLOR_HUSK, COLOR_DONKEY_BROWN],
+        [COLOR_FLAX, COLOR_HUSK, COLOR_DRIFTWOOD],
+        [COLOR_FLAX, COLOR_TUMBLEWEED, COLOR_DONKEY_BROWN],
+      ];
+
+
+      // ENUM BLOCK TYPES
+
+      const CLEAR = 0;
+      const VIRUS = 1;
+      const RED = 2;
+      const GREEN = 3;
+      const START = 4;
+      const END = 5;
+      const GOLD = 6;
+      const GRASS = 7;
+      const HOUSE = 8;
+      const TREE = 9;
+
+
+      // ENUM DIRECTIONS
+
+      const TOP = 0;
+      const RIGHT = 1;
+      const BOTTOM = 2;
+      const LEFT = 3;
+
+
+      // ENUM BUTTONS
+
+      const SPECS = 0;
+      const MAP = 1;
+      const LENS = 2;
+      const MASK = 3;
+      const PPE = 4;
+      const PILL = 5;
+
+      const BUTTON_MAP = [
+       [30, 'specs', 'increase', 'sight radius'],
+       [50, 'map', 'remove visual', 'blocking'],
+       [100, 'lens', 'make virus', 'visible'],
+       [30, 'mask', 'reduce damage', 'to health'],
+       [50, 'ppe', 'reduce damage', 'to health'],
+       [50, 'pill', 'restore health', 'upto 10 points'],
+      ];
+
+
+      // ENUM STAGES
+
+      const INTRO = 0;
+      const PLAYING = 1;
+
+
+      // GAME CONFIG
+
+      const screenWidth = Math.floor(window.innerWidth/100) * 100;
+      const screenHeight = Math.floor(window.innerHeight/100) * 100;
+      const mazeScaleFactor = 5;
+      const boardScaleFactor = 2;
+      const cellScaleFactor = mazeScaleFactor * boardScaleFactor;
+      const borderWidthBase = 1;
+      const borderWidth = borderWidthBase * boardScaleFactor;
+      const cellWidth = 1 * cellScaleFactor + borderWidth;
+      const blockResolution = 50;
+      const viewportWidth = Math.floor(screenWidth / blockResolution);
+      const viewportHeight = Math.floor(screenHeight / blockResolution);
+      const fps = 20;
+      const levelTexts = ['easy', 'normal', 'moderate', 'hard', 'expert'];
+      const levelDifficultyParams = [16, 12, 10, 8, 6];
+      const virusMovementSequence = [[0, 0], [1, 0], [0, 1], [-1, 0], [0, -1], [0, 0], [1, 1], [0, 1]];
+      const coin_frame_order = [0, 1, 2, 3];
+      const man_frame_order = [0, 1, 2, 1];
+
+      // GAME STATE VARIABLES
+
+      let mazeDim, boardDim, maze, start, target, visible, mazeCopy,
+          orientation, moving, message, gameRunning, treeMap,
+          lock, lockCounter, moveStart, timer, wealth, boardDimBase,
+          health, sightRadius, damageVector, showVirus, discoveryMode,
+          curpos, viewport, clickables, optionsShown, gameWasRunning,
+          buttons, lens, specs, map, mask, ppe, stage, level, levelText,
+          optionsTitle, showOptionsClose;
+
+      level = 0;
+      levelText = levelTexts[0];
+
+      initGame(true);
+      discoveryMode = false;
+      showVirus = true;
+      stage = INTRO;
+
+
+      function initLevel () {
+        mazeDim = 8 + 2 * level;
+        levelText = levelTexts[level];
+        boardDimBase = getBoardDim(); 
+        boardDim = boardDimBase  * boardScaleFactor;
+        [mazeCopy, start, target, treeMap] = newMaze(mazeDim, mazeDim);
+      }
+
+      function initGame (isNewGame) {
+        if (isNewGame) initLevel();
+        
+        maze = copy2darr(mazeCopy);
+        visible = get2darr(boardDim, boardDim, false);
+        
+        orientation = TOP;
+        moving = false;
+        message = '';
+        gameRunning = true;
+        
+        lock = true;
+        lockCounter = 0;
+        moveStart = 0;
+        timer = 0;
+        
+        wealth = 0;
+        health = 100;
+        sightRadius = 2;
+        damageVector = [4, 20];
+        showVirus = false;
+        discoveryMode = true;
+
+        curpos = [...start];
+        viewport = [curpos[0]-Math.floor(viewportHeight / 2), curpos[1]-Math.floor(viewportHeight / 2)];
+        containViewport();
+        
+        clickables = {
+          options: [ screenWidth - 148, 10, 128, 20 ],
+        };
+        optionsShown = false;
+
+        buttons = [];
+        lens = false;
+        map = false;
+        specs = false;
+        mask = false;
+        ppe = false;
+
+        stage = PLAYING;
+      }
+
+      const actions = {
+        options: function () {
+          optionsShown = true;
+          optionsTitle = 'OPTIONS';
+          showOptionsClose = true;
+          if (gameRunning) {
+            gameWasRunning = gameRunning;
+            gameRunning = false;
+          }
+        },
+        optionsClose: function () {
+          clickables.optionsClose = false;
+          optionsShown = false;
+          gameRunning = gameWasRunning;
+        },
+
+        specs: function () {
+          clickables.specs = false;
+          wealth -= 30;
+          specs = true;
+          sightRadius = 4;
+        },
+
+        map: function () {
+          clickables.map = false;
+          wealth -= 50;
+          map = true;
+          discoveryMode = false;
+        },
+
+        lens: function () {
+          clickables.lens = false;
+          wealth -= 100;
+          lens = true;
+          showVirus = true;
+        },
+
+        mask: function () {
+          clickables.mask = false;
+          wealth -= 30;
+          mask = true;
+          damageVector = [3, 15];
+        },
+
+        ppe: function () {
+          clickables.ppe = false;
+          wealth -= 50;
+          ppe = true;
+          damageVector = [2, 10];
+        },
+
+        pill: function () {
+          if (health >= 100) return;
+          clickables.pill = false;
+          wealth -= 50;
+          health = Math.min(health + 10, 100);
+        },
+
+        start: function () {
+          clickables.start = false;
+          clickables.levelUp = false;
+          clickables.levelDown = false;
+          initGame(true);
+        },
+
+        levelUp: function () {
+          level += 1;
+          if (level > 4) level = 0;
+          levelText = levelTexts[level];
+        },
+
+        levelDown: function () {
+          level -= 1;
+          if (level < 0) level = 4;
+          levelText = levelTexts[level];
+        },
+
+        restart: function () {
+          closeOptionsHelper();
+          initGame();
+        },
+
+        'new map': function () {
+          closeOptionsHelper();
+          initGame(true);
+        },
+
+        'main menu': function () {
+          closeOptionsHelper();
+          discoveryMode = false;
+          showVirus = true;
+          stage = INTRO;
+        },
+      };
+
+      function closeOptionsHelper () {
+        clickables.optionsClose = false;
+        clickables.restart = false;
+        clickables['new map'] = false;
+        clickables['main menu'] = false;
+        optionsShown = false;
+      }
+
+
+      // THE CANVAS AND CONTEXT
+
+      const cnv = document.getElementById('c');
+      cnv.width = screenWidth;
+      cnv.height = screenHeight;
+      const ctx = cnv.getContext('2d');
+
+
+      // UTIL FUNCTIONS
+
+      function rnd (l, u) {
+        return Math.floor(Math.random()*(u-l)) + l;
+      }
+
+      function get2darr (r, c, f) {
+        return Array.from(Array(r), _ => Array(c).fill(f));
+      }
+
+      function iter2d (il, iu, jl, ju, f) {
+        for (let i=il; i<iu; i++) {
+          for (let j=jl; j<ju; j++) f(i, j);
+        }
+      }
+
+      function iterSq(l, u, f) {
+        iter2d(l, u, l, u, f);
+      }
+
+      function copy2darr (arr) {
+        let n = arr.length, m = arr[0].length;
+        let res = get2darr(n, m, 0);
+        iter2d(0, n, 0, m, function (i, j) {
+          res[i][j] = arr[i][j];
+        });
+        return res;
+      }
+
+      function getBoardDim () {
+        return mazeDim * (mazeScaleFactor + 1) + 1;
+      }
+
+      function chunks (s, l) {
+        let res = [], ll = s.length, i = 0;
+        while (i < ll) {
+          res.push(s.slice(i, i+l));
+          i += l;
+        }
+        return res;
+      }
+
+      function twodig (x) {
+        let s = x.toString()
+        if (s.length < 2) return '0'+s;
+        return s;
+      }
+
+      function getCode (x, y, b=2, m=3) {
+        return (x & (m << (b*y))) >>> (b*y);
+      }
+
+      function decode (s, r, c, bitwidth=2, mask=3) {
+        const wid = r*c;
+        const blocks = chunks(s, wid);
+        const res = [];
+        blocks.map(block => {
+          const lines = chunks(block, c).map(l => l.split('').map(x => x.charCodeAt(0)-33));
+          const frames = get2darr(6/bitwidth, 0);
+          lines.map(line => {
+            frames.map((_, y) => frames[y].push(line.map(x => getCode(x, y, bitwidth, mask))));
+          });
+          res.push(...frames);
+        })
+        return res;
+      }
+
+      function fls (B) {
+        ctx.fillStyle = B;
+        ctx.fillRect(0, 0, screenWidth, screenHeight);
+      }
+
+      function cls (B) {
+        ctx.clearRect(0, 0, screenWidth, screenHeight);
+        fls(B);
+      }
+
+      function drawFrame (x, y, frame, L, M, D, dim = 3) {
+        const colorArr = [,L,M,D];
+        iter2d(0, frame.length, 0, frame[0].length, function (i, j) {
+          if (frame[i][j]) {
+            ctx.fillStyle = colorArr[frame[i][j]];
+            ctx.fillRect(x+j*dim, y+i*dim, dim, dim);
+            ctx.fillStyle= COLOR_TRANSPARENT;
+          }
+        });
+      }
+
+      function mirrorFrame (f) {
+        let nf = get2darr(f.length, f[0].length, 0);
+        iter2d(0, f.length, 0, f[0].length, function (i, j) {
+          nf[i][f[0].length-j-1] = f[i][j];
+        });
+        return nf;
+      }
+
+      function stringToCharMap (s) {
+        return s.split('').reduce((acc, ch, index) => {
+          acc[ch] = index;
+          return acc;
+        }, {});
+      }
+
+      function isDefined (x) {
+        return typeof x !== 'undefined';
+      }
+
+      function cached (f) {
+        const cache = {};
+        return function (x) {
+          let y = cache[x];
+          if(y) return y;
+          y = f(x);
+          cache[x] = y;
+          return y;
+        };
+      }
+
+      var getCharInfo = cached(function (_ch) {
+        let ch = _ch.toUpperCase();
+        if (ch === '0') ch = 'O';
+        if (ch === '5') ch = 'S';
+        
+        let res = char_map_3px[ch];
+        if (isDefined(res)) return [res, 3];
+        res = char_map_4px[ch];
+        if (isDefined(res)) return [res, 4];
+        res = char_map_5px[ch];
+        if (isDefined(res)) return [res, 5];
+        return [null, 3];
+      });
+
+      var getCharRep = cached(function (ch) {
+        let [ind, width] = getCharInfo(ch);
+        if (ind !== null) {
+          if (width === 3) return [font_3px_arr[ind], width];
+          if (width === 4) return [font_4px_arr[ind], width];
+          if (width === 5) return [font_5px_arr[ind], width];
+        }
+        return [SPACE_CHAR, 3];
+      });
+
+      function getWordLength (word) {
+        let len = -1;
+        for (let i=0; i<word.length; i++) len += 1 + getCharInfo(word[i])[1];
+        return len;
+      }
+
+      function drawText (x, y, text, color, size) {
+        ctx.fillStyle = color;
+        let cx = x;
+        let cy = y;
+        let txt = text.toString();
+        
+        for (let i=0; i<txt.length; i++) {
+          let [matrix, width] = getCharRep(txt[i]);
+          iter2d(0, 5, 0, width, function (j, k) {
+            if (matrix[j][k]) ctx.fillRect(k*size + cx, j*size + cy, size, size);
+          });
+          cx += (width + 1) * size;
+        }
+      }
+
+
+      // AUDIO UTILS
+
+      function audioInit () {
+        const AudioContext = window.AudioContext || window.webkitAudioContext;
+        actx = new AudioContext();
+        
+        birdGain = actx.createGain();
+        ambientGain = actx.createGain();
+        notesGain = actx.createGain();
+
+        birdGain.gain.value = 1;
+        notesGain.gain.value = 0.5;
+        ambientGain.gain.value = 0.3;
+
+        const dest = actx.destination;
+        birdGain.connect(dest);
+        ambientGain.connect(dest);
+        notesGain.connect(dest);
+        
+        return Promise.all([
+          makeAudioBuffer(bird1).then(buf => bird1Buffer = buf),
+          makeAudioBuffer(bird2).then(buf => bird2Buffer = buf),
+          makeAudioBuffer(bird3).then(buf => bird3Buffer = buf),
+          makeAudioBuffer(ambient).then(buf => ambientBuffer = buf),
+        ]).then(() => actxInitialized = true);
+      }
+
+      function playNotes (notes, wave = 'sine', gainValue = 0.5) {
+        const now = actx.currentTime;
+        for (let i=0; i<notes.length; i++) {
+          if (notes[i]) {
+            const osc = actx.createOscillator();
+            osc.connect(notesGain);
+            osc.start(now + i * 0.1);
+            osc.frequency.setValueAtTime(440 * 1.06 ** (13 - notes[i]), now + i * 0.1);
+            osc.type = wave;
+            notesGain.gain.setValueAtTime(gainValue, now + i * 0.1);
+            notesGain.gain.setValueAtTime(0.0001, now + i * 0.1 + 0.08, 0.005);
+            osc.stop(now + i * 0.1 + 0.09);
+            setTimeout(() => osc.disconnect(), (i+1) * 100);
+          }
+        } 
+      } 
+
+      function base64ToArrayBuffer(base64) {
+        const binary_string = window.atob(base64);
+        const len = binary_string.length;
+        const bytes = new Uint8Array(len);
+        for (let i = 0; i < len; i++) {
+          bytes[i] = binary_string.charCodeAt(i);
+        }
+        return bytes.buffer;
+      }
+
+      function playBuffer (buffer, duration, dest) {
+        const source = actx.createBufferSource();
+        source.connect(dest);
+        source.buffer = buffer;
+        source.start(0);
+        source.stop(actx.currentTime + duration);
+        setTimeout(() => source.disconnect(), duration * 1010);
+      }
+
+      function makeAudioBuffer (str) {
+        return new Promise((resolve, reject) => actx.decodeAudioData(base64ToArrayBuffer(str), resolve));
+      }
+
+
+      // GAME LOGIC
+
+      function drawStats() {
+        let secs = Math.floor(timer / fps);
+        let mins = Math.floor(secs / 60);
+        secs %= 60;
+        let time = twodig(mins) + ':' + twodig(secs);
+
+        ctx.fillStyle = COLOR_DARK_OVERLAY;
+        ctx.fillRect(0, 0, screenWidth, 40);
+
+        drawFrame(20, 5, heart, COLOR_CHAMPAIGN, COLOR_SCARLET, COLOR_BRONZE, 2);
+        drawText(60, 10, health, COLOR_WHITE, 4);
+
+        drawFrame(160, 5, coin_frames[0], COLOR_LIGHT_GOLD, COLOR_GOLD, COLOR_GOLDEN_BROWN, 2);
+        drawText(200, 10, wealth, COLOR_WHITE, 4);
+
+        drawFrame(300, 5, clock, COLOR_WHITE, COLOR_SLATE_BLUE, COLOR_DARK_GRAY, 2);
+        drawText(340, 10, time, COLOR_WHITE, 4);
+
+        if (gameRunning) drawText(screenWidth - 148, 10, 'OPTIONS', COLOR_WHITE, 4);
+
+        if (message) {
+          ctx.fillStyle = COLOR_DARK_OVERLAY;
+          let top_left_x = Math.floor((screenWidth - 300)/2);
+          let top_left_y = Math.floor((screenHeight - 100)/2);
+          ctx.fillRect(top_left_x, top_left_y, 300, 100);
+          drawFrame(top_left_x + 25, top_left_y + 30, warning, COLOR_WHITE, COLOR_SCARLET, COLOR_DARK_GRAY, 3);
+          drawText(top_left_x + 100, top_left_y + 40, message, COLOR_WHITE, 4);
+        }
+      }
+
+      function drawBuyButtons () {
+        buttons.length = 0;
+        if (wealth >= 30) {
+          if (!specs) buttons.push(SPECS);
+          if (!mask) buttons.push(MASK);
+        }
+        if (wealth >= 50) {
+          if (specs && !map) buttons.push(MAP);
+          if (mask && !ppe) buttons.push(PPE);
+          if (health < 100) buttons.push(PILL);
+        }
+        if (wealth >= 100 && specs && map && !lens) buttons.push(LENS);
+
+        let left_marker = screenWidth;
+        buttons.map(function (button) {
+          left_marker -= 205;
+          let [cost, title, text1, text2] = BUTTON_MAP[button];
+          drawBuyButton(left_marker, screenHeight - 90, cost, title, text1, text2);
+        });
+      }
+
+      function drawBuyButton (x, y, cost, title, text1, text2) {
+        const btnWidth = 185, btnHeight = 70;
+        ctx.beginPath();
+        ctx.rect(x, y, btnWidth, btnHeight);
+        ctx.fillStyle = COLOR_DARK_OVERLAY;
+        ctx.fill();
+        ctx.strokeStyle = COLOR_SCARLET;
+        ctx.stroke();
+        ctx.closePath();
+        ctx.fillStyle = COLOR_SCARLET;
+        ctx.fillRect(x + 60, y, 1, btnHeight);
+        drawFrame(
+          x + 16,
+          y + 10,
+          coin_frames[0], 
+          COLOR_LIGHT_GOLD, COLOR_GOLD, COLOR_GOLDEN_BROWN, 2
+        );
+        drawText(x + (cost === 100 ? 10: 18), y + 45, cost, COLOR_WHITE, 3);
+        drawText(x + 90, y + 10, title, COLOR_WHITE, 4);
+        drawText(x + 90, y + 40, text1, COLOR_WHITE, 1.5);
+        drawText(x + 90, y + 52, text2, COLOR_WHITE, 1.5);
+        if (!clickables[title]) clickables[title] = [x, y, btnWidth, btnHeight];
+        else {
+          clickables[title][0] = x;
+          clickables[title][1] = y;
+        }
+      }
+
+      function drawButton (x, y, text, width, color = COLOR_WHITE, fontSize = 3) {
+        const buttonHeight = 15 * fontSize;
+        const textLen = getWordLength(text) * fontSize;
+
+        ctx.beginPath();
+        ctx.rect(x, y, width, buttonHeight);
+        ctx.closePath();
+        ctx.fillStyle = COLOR_DARK_OVERLAY;
+        ctx.fill();
+        ctx.strokeWidth = 2;
+        ctx.strokeStyle = color;
+        ctx.stroke();
+        drawText(x + Math.floor((width - textLen) / 2), y + 5*fontSize, text, color, fontSize);
+        if (!clickables[text]) clickables[text] = [x, y, width, buttonHeight];
+      }
+
+      function drawOptions () {
+        fls(COLOR_MEDIUM_OVERLAY);
+        
+        let modalWidth = 400, modalHeight = 300;
+        let top_left_x = Math.floor((screenWidth - modalWidth)/2);
+        let top_left_y = Math.floor((screenHeight - modalHeight)/2);
+        
+        ctx.fillStyle = COLOR_DARK_OVERLAY;
+        ctx.fillRect(top_left_x, top_left_y, modalWidth, modalHeight);
+
+        if (showOptionsClose) {
+          drawText(top_left_x + modalWidth - 100, top_left_y + 20, 'CLOSE', COLOR_WHITE, 4);
+          if (!clickables.optionsClose) clickables.optionsClose = [ top_left_x + modalWidth - 100, top_left_y + 20, 80, 20 ];
+        }
+
+        const titleLen = getWordLength(optionsTitle) * 4;
+        drawText(top_left_x + Math.floor((modalWidth - titleLen)/2), top_left_y + 60, optionsTitle, COLOR_WHITE, 4);
+
+        const buttonWidth = 200;
+        const x_marker = top_left_x + Math.floor((modalWidth - buttonWidth)/2);
+        drawButton(x_marker,  top_left_y + 100, 'restart', 200);
+        drawButton(x_marker,  top_left_y + 160, 'new map', 200);
+        drawButton(x_marker,  top_left_y + 220, 'main menu', 200);
+      }
+
+      function newMaze() {
+        let totalCells = mazeDim * mazeDim;
+        let cells = get2darr(mazeDim, mazeDim, 0);
+        let unvis = get2darr(mazeDim, mazeDim, true);
+        iterSq(0, mazeDim, function(i, j) {
+          cells[i][j] = [0, 0, 0, 0];
+        });
+
+        let currentCell = [
+          rnd(3*Math.floor(mazeDim/4), mazeDim),
+          rnd(0, Math.floor(mazeDim/2)),
+        ];
+        let targetCell = [
+          0,
+          rnd(Math.floor(mazeDim/4), mazeDim),
+        ];
+        let start = [...currentCell];
+        let path = [currentCell];
+        unvis[currentCell[0]][currentCell[1]] = false;
+        let visited = 1;
+
+        while (visited < totalCells) {
+          let pot = [[currentCell[0]-1, currentCell[1], 0, 2],
+            [currentCell[0], currentCell[1]+1, 1, 3],
+            [currentCell[0]+1, currentCell[1], 2, 0],
+            [currentCell[0], currentCell[1]-1, 3, 1]];
+          let neighbors = [];
+
+          for (let l = 0; l < 4; l++) {
+            if (pot[l][0] >= 0 && pot[l][0] < mazeDim && pot[l][1] >= 0 && pot[l][1] < mazeDim && unvis[pot[l][0]][pot[l][1]]) {
+              neighbors.push(pot[l]);
+            }
+          }
+
+          if (neighbors.length) {
+            let next = neighbors[rnd(0, neighbors.length)];
+            if (rnd(0,15) === 1) {
+              cells[currentCell[0]][currentCell[1]][next[2]] = 1;
+              cells[next[0]][next[1]][next[3]] = 1;
+            }
+
+            next = neighbors[rnd(0, neighbors.length)];
+            cells[currentCell[0]][currentCell[1]][next[2]] = 1;
+            cells[next[0]][next[1]][next[3]] = 1;
+
+            unvis[next[0]][next[1]] = false;
+            visited++;
+
+            currentCell = [next[0], next[1]];
+            path.push(currentCell);
+          } else {
+            currentCell = path.pop();
+          }
+        }
+
+        let board = get2darr(boardDim, boardDim, TREE); 
+        let treeMap = get2darr(boardDim, boardDim, 0);
+        iterSq(0, boardDim, function (i, j) {
+          treeMap[i][j] = [rnd(0, 6), rnd(0, 6)];
+        });
+
+        iterSq(0, mazeDim, function (i, j) {
+          iter2d(i*cellWidth + borderWidth, (i+1)*cellWidth, j*cellWidth + borderWidth, (j+1)*cellWidth, function (p, q) {
+            board[p][q] = CLEAR;
+          });
+
+          if (cells[i][j][0]) {
+            iter2d(i*cellWidth, i*cellWidth + borderWidth, j*cellWidth + borderWidth, (j+1)*cellWidth, function (p, q) {
+              board[p][q] = CLEAR;
+            });
+          }
+          if (cells[i][j][3]) {
+            iter2d(i*cellWidth + borderWidth, (i+1)*cellWidth, j*cellWidth, j*cellWidth + borderWidth, function (p, q) {
+              board[p][q] = CLEAR;
+            });
+          }
+        });
+
+        iterSq(borderWidthBase*2, boardDimBase - borderWidthBase*2, function (_i, _j) {
+          let i = _i * boardScaleFactor, j = _j * boardScaleFactor;
+          if (board[i][j] === TREE && rnd(0,3) === 1) {
+            board[i][j] = CLEAR;
+            board[i+1][j] = CLEAR;
+            board[i][j+1] = CLEAR;
+            board[i+1][j+1] = CLEAR;
+          } else {
+            if ((board[i+2][j] === TREE || board[i-2][j] === TREE || board[i][j+2] === TREE || board[i][j-2] === TREE)) {
+              if (board[i][j] !== VIRUS && board[i][j] !== RED && rnd(0,3) === 1) {
+                board[i][j] = TREE;
+                board[i+1][j] = TREE;
+                board[i][j+1] = TREE;
+                board[i+1][j+1] = TREE;
+              }
+            } else {
+              if (rnd(0, levelDifficultyParams[level]) === 1) {
+                iter2d(i, i+2, j, j+2, function (p, q) {
+                  board[p][q] = RED;
+                });
+                board[i+1][j+1] = VIRUS;
+              }
+            }
+          }
+        });
+
+        start = [start[0]*cellWidth + cellScaleFactor, start[1]*cellWidth + 2*borderWidth];
+        let [si, sj] = start;
+        targetCell = [targetCell[0]*cellWidth + 3*borderWidth, targetCell[1]*cellWidth + 4*borderWidth];
+        let [ti, tj] = targetCell;
+        board[si][sj] = START;
+        board[ti][tj] = END;
+
+        board[si+1][sj] = CLEAR;
+        board[si][sj+1] = CLEAR;
+        board[si+1][sj+1] = CLEAR;
+
+        board[ti-2][tj-2] = HOUSE;
+        board[ti-2][tj-1] = HOUSE;
+        board[ti-2][tj] = HOUSE;
+        board[ti-1][tj-2] = HOUSE;
+        board[ti-1][tj-1] = HOUSE;
+        board[ti-1][tj] = HOUSE;
+        board[ti][tj-2] = HOUSE;
+        board[ti][tj-1] = HOUSE;
+
+        board[ti+1][tj-2] = CLEAR;
+        board[ti+1][tj-1] = CLEAR;
+        board[ti+1][tj] = CLEAR;
+        board[ti+2][tj-2] = CLEAR;
+        board[ti+2][tj-1] = CLEAR;
+        board[ti+2][tj] = CLEAR;
+
+        iterSq(borderWidth, boardDim - borderWidth, function (i, j) {
+          if (board[i][j] === CLEAR) {
+            let xx = rnd(0, mazeDim * 2);
+            if (xx === 1) {
+              board[i][j] = GOLD;
+            } else if (xx >= 3 * Math.floor(mazeDim/2)) {
+              board[i][j] = GRASS;
+            }
+          }
+        });
+
+        return [board, start, targetCell, treeMap];
+      }
+
+      function mainLoop () {
+        cls(COLOR_CHAMPAIGN);
+        drawMaze();
+        lock = false;
+
+        if (Math.abs((lockCounter - moveStart)) % 3 === 2) {
+          moving = false;
+          moveStart = 0;
+        }
+
+        if (gameRunning) {
+          if (actxInitialized) {
+            if (timer % fps === 0) {
+              if (timer % 4 === 0) playBuffer(ambientBuffer, 2, ambientGain);
+              let xx = rnd(0, 9);
+              if (xx === 1) playBuffer(bird1Buffer, 1, birdGain);
+              if (xx === 2) playBuffer(bird2Buffer, 1, birdGain);
+              if (xx === 3) playBuffer(bird3Buffer, 1, birdGain);
+            }
+          }
+          timer += 1;
+        }
+
+        let [i, j] = curpos;
+        if (maze[i][j] === GOLD) {
+          wealth += 1;
+          maze[i][j] = CLEAR;
+          playNotes([5, 1], 'sawtooth', 0.2);
+        }
+
+        if (health > 0) {
+          if (maze[i][j] === RED) {
+            if (lockCounter % 4 === 0) {
+              health -= damageVector[0];
+              fls(COLOR_ORANGE_OVERLAY);
+              if (gameRunning) playNotes([24, 25]);
+            }
+            message = 'VIRUS ALERT';
+          }
+
+          if (maze[i][j] === VIRUS) {
+            if (lockCounter % 4 === 0){
+              health -= damageVector[1];
+              fls(COLOR_RED_OVERLAY);
+              if (gameRunning) playNotes([24, 25]);
+            }
+            message = 'VIRUS ALERT';
+          }
+        }
+
+        if (maze[i][j] !== RED && maze[i][j] !== VIRUS) {
+          message = '';
+        }
+
+        if (health <= 0) {
+          health = 0;
+          lock = true;
+          fls(COLOR_RED_OVERLAY);
+          if (gameRunning) playNotes([25,24,23,22,21,20,21,22,23,24]);
+          gameRunning = false;
+          optionsTitle = 'GAME OVER';
+          showOptionsClose = false;
+          optionsShown = true;
+          showVirus = true;
+        }
+
+        if (maze[i][j] === END) {
+          lock = true;
+          fls(COLOR_VIOLET_OVERLAY);
+          if (gameRunning) playNotes([21,22,21,19,17,15,13,10,7,4]);
+          gameRunning = false;
+          optionsTitle = 'SUCCESS';
+          showOptionsClose = false;
+          optionsShown = true;
+        }
+
+        drawStats();
+        if (gameRunning) drawBuyButtons();
+        if (optionsShown) drawOptions();
+      }
+
+      function intro () {
+        gameRunning = false;
+        cls(COLOR_CHAMPAIGN);
+        drawMaze();
+        fls(COLOR_MEDIUM_OVERLAY);
+
+        ctx.fillStyle = COLOR_DARK_OVERLAY;
+        ctx.fillRect(40, 40, 715, 220);
+        drawText(60, 60, '404 : ROAD NOT FOUND', COLOR_SCARLET, 5);
+        drawText(60, 110, 'All roads vanished in a yellow wood', COLOR_WHITE, 3);
+        drawText(60, 135, 'Timmy is lost and can not move forth', COLOR_WHITE, 3);
+        drawText(60, 160, 'The germs could kill him right where he stood', COLOR_WHITE, 3);
+        drawText(60, 185, 'So with the arrow keys if you could', COLOR_WHITE, 3);
+        drawText(60, 210, 'Bring Timmy home safely to the north', COLOR_WHITE, 3);
+
+        const baseY = screenHeight - 160;
+        ctx.fillStyle = COLOR_DARK_OVERLAY;
+        ctx.fillRect(40, baseY, 340, 120);
+
+        drawText(60, baseY + 20, 'LEVEL', COLOR_WHITE, 3);
+        
+        ctx.beginPath();
+        ctx.moveTo(160, baseY + 27.5);
+        ctx.lineTo(180, baseY + 20);
+        ctx.lineTo(180, baseY + 35);
+        ctx.closePath();
+        ctx.fillStyle = COLOR_WHITE;
+        ctx.fill();
+        if (!clickables.levelDown) clickables.levelDown = [160, baseY + 20, 20, 20];
+
+        const levelTextLen = getWordLength(levelText) * 3;
+        drawText(200 + Math.floor((120 - levelTextLen) / 2), baseY + 20, levelText, COLOR_WHITE, 3);
+
+        ctx.beginPath();
+        ctx.moveTo(360, baseY + 27.5);
+        ctx.lineTo(340, baseY + 20);
+        ctx.lineTo(340, baseY + 35);
+        ctx.closePath();
+        ctx.fillStyle = COLOR_WHITE;
+        ctx.fill();
+        if (!clickables.levelUp) clickables.levelUp = [340, baseY + 20, 20, 20];
+
+        drawButton(60, baseY + 55, 'start', 150);
+      }
+
+      setInterval(() => {
+        lockCounter = (lockCounter + 1) % 8;
+        if (stage === PLAYING) mainLoop();
+        if (stage === INTRO) intro();
+      }, Math.floor(1000 / fps));
+
+
+      function containViewport () {
+        let [ci, cj] = curpos;
+        for (let i=ci-sightRadius; i<=ci+sightRadius; i++) {
+          for (let j=cj-sightRadius; j<=cj+sightRadius; j++) {
+            if (i>=0 && i<boardDim && j>=0 && j<boardDim) visible[i][j] = 1;
+          }
+        }
+
+        if (curpos[0] <= viewport[0]+4) viewport[0] -= 1;
+        if (curpos[0] >= viewport[0]+viewportHeight - 4) viewport[0] += 1;
+        if (curpos[1] <= viewport[1]+4) viewport[1] -= 1;
+        if (curpos[1] >= viewport[1]+viewportWidth - 4) viewport[1] += 1;
+
+        if (viewport[0] > boardDim - viewportHeight) viewport[0] = boardDim - viewportHeight;
+        if (viewport[0] < 0) viewport[0] = 0;
+        if (viewport[1] > boardDim - viewportWidth) viewport[1] = boardDim - viewportWidth;
+        if (viewport[1] < 0) viewport[1] = 0;
+      }
+
+      function getGradientFill (i, j) {
+        let res = (j-1 >= 0) && visible[i][j-1];
+        res = res || (j+1 < boardDim) && visible[i][j+1];
+        res = res || (i-1 >= 0) && visible[i-1][j];
+        res = res || (i+1 < boardDim) && visible[i+1][j];
+        res = res || (i-1 >= 0 && j-1 >= 0) && visible[i-1][j-1];
+        res = res || (i-1 >= 0 && j+1 < boardDim) && visible[i-1][j+1];
+        res = res || (i+1 < boardDim && j-1 >= 0) && visible[i+1][j-1];
+        res = res || (i+1 < boardDim && j+1 < boardDim) && visible[i+1][j+1]; 
+        
+        return res;
+      }
+
+      function drawMaze () {
+        let [sti, stj] = viewport;
+        let mp = {};
+
+        for (let i=sti; i< sti + viewportHeight; i++) {
+          for(let j=stj; j< stj + viewportWidth; j++) {
+            let gradientFill = false;
+          
+            if (maze[i][j] === TREE) {
+              let basei = i%2 === 0 ? i : i-1;
+              let basej = j%2 === 0 ? j : j-1;
+              
+              if (!mp[`${basei},${basej}`]) {
+                let [frameIndex, colorSchemeIndex] = treeMap[basei][basej];
+                let [L, M, D] = TREE_COLOR_SCHEMES[colorSchemeIndex];
+                drawFrame(
+                  (basej-stj) * blockResolution, 
+                  (basei-sti) * blockResolution, 
+                  tree_frames[frameIndex], 
+                  L, M, D, 6
+                );
+                mp[`${basei},${basej}`] = true;
+              }
+            }
+            
+            if (maze[i][j] === END || maze[i][j] === HOUSE) {
+              let [ti, tj] = target;
+              drawFrame(
+                (tj-2-stj) * blockResolution + 3, 
+                (ti-2-sti) * blockResolution + 3, 
+                house, 
+                COLOR_WHITE, '#f60', COLOR_DARK_GRAY, 9
+              );
+
+              // draw the arrow
+              const bj = (tj - stj) * blockResolution;
+              const bi = (ti - sti + 1) * blockResolution;
+
+              ctx.fillStyle = COLOR_DARK_GRAY;
+              ctx.beginPath();
+              ctx.moveTo(
+                bj + Math.floor(blockResolution / 2) - 20,
+                bi + 10,
+              );
+              ctx.lineTo(
+                bj + Math.floor(blockResolution / 2) - 30,
+                bi + 30,
+              );
+              ctx.lineTo(
+                bj + Math.floor(blockResolution / 2) - 10,
+                bi + 30,
+              );
+              ctx.closePath();
+              ctx.fill();
+              ctx.fillRect(
+                bj + Math.floor(blockResolution / 2) - 25,
+                bi + 30,
+                10, 20
+              );
+              const helperText = 'ENTER THROUGH THE DOOR';
+              const helperTextLen = getWordLength(helperText) * 2;
+              drawText(
+                bj + blockResolution - helperTextLen, 
+                bi + blockResolution + 20, 
+                helperText, COLOR_DARK_GRAY, 2
+              );
+            }
+            
+            if (discoveryMode && !visible[i][j]) {
+              gradientFill = getGradientFill(i, j);
+              if (!gradientFill) {
+                ctx.fillStyle = COLOR_DARK_GRAY;
+                ctx.fillRect((j-stj) * blockResolution, (i-sti) * blockResolution, blockResolution, blockResolution);
+                continue;
+              }
+            }
+            
+            if (showVirus && maze[i][j] === VIRUS) {
+              let [dx, dy] = virusMovementSequence[lockCounter];
+              drawFrame(
+                (j-stj) * blockResolution + dx * 20, 
+                (i-sti) * blockResolution + dy * 20, 
+                virus, 
+                '#fd8', '#f80', '#a00', 2
+              );
+            }
+            if (maze[i][j] === GRASS) {
+              drawFrame(
+                (j-stj) * blockResolution + 1, 
+                (i-sti) * blockResolution + 1, 
+                grass, 
+                '#dc9', '#ac8', '#687'
+              );
+            }
+
+            if (maze[i][j] === GOLD) {
+              let frame = coin_frames[coin_frame_order[Math.floor(lockCounter/2)]];
+              drawFrame(
+                (j-stj) * blockResolution + 4, 
+                (i-sti) * blockResolution + 4, 
+                frame, 
+                COLOR_LIGHT_GOLD, COLOR_GOLD, COLOR_GOLDEN_BROWN
+              );
+            }
+
+            let fci = man_frame_order[Math.floor(lockCounter/2)];
+            if (!moving) fci = 1;
+
+            let frame = side_frames_left[fci];
+            if (orientation === TOP) frame = back_frames[fci];
+            if (orientation === BOTTOM) frame = front_frames[fci];
+            if (orientation === RIGHT) frame = side_frames_right[fci];
+
+            if (i === curpos[0] && j === curpos[1]) {
+              drawFrame(
+                (j-stj) * blockResolution + 4, 
+                (i-sti) * blockResolution - 13, 
+                frame, 
+                COLOR_WHITE, '#fca', '#545'
+              );
+            }
+
+            if (gradientFill) {
+              ctx.fillStyle = '#322a';
+              ctx.fillRect((j-stj) * blockResolution, (i-sti) * blockResolution, blockResolution, blockResolution);
+            }
+          }
+        }
+      }
+
+      function canPass(i, j) {
+        return maze[i][j] !== TREE && maze[i][j] !== HOUSE;
+      }
+
+      document.addEventListener('keydown', (e) => {
+        if (!actxInitialized) audioInit();
+        if (!gameRunning || lock) return;
+        let [i, j] = curpos;
+        if (e.keyCode === 38) {
+          if (canPass(i-1, j)) {
+            curpos[0] = i-1;
+            moving = true;
+            moveStart = lockCounter;
+          }
+          orientation = TOP;
+        }
+        if (e.keyCode === 37) {
+          if (canPass(i, j-1)) {
+            curpos[1] = j-1;
+            moving = true;
+            moveStart = lockCounter;
+          }
+          orientation = LEFT;
+        }
+        if (e.keyCode === 40) {
+          if (canPass(i+1, j)) {
+            curpos[0] = i+1;
+            moving = true;
+            moveStart = lockCounter;
+          }
+          orientation = BOTTOM;
+        }
+        if (e.keyCode === 39) {
+          if (canPass(i, j+1)) {
+            curpos[1] = j+1;
+            moving = true;
+            moveStart = lockCounter;
+          }
+          orientation = RIGHT;
+        }
+        containViewport();
+        lock = true;
+      });
+
+      function clickedOn (x, y) {
+        let matches = Object.keys(clickables).filter((key) => {
+          if (!clickables[key]) return false;
+
+          let [x1, y1, dx, dy] = clickables[key];
+          return (x >= x1 && x <= x1+dx && y >= y1 && y <= y1 + dy);
+        });
+        if (matches.length) return matches[0];
+        return null;
+      }
+
+      cnv.addEventListener('click', function (e) {
+        if (!actxInitialized) audioInit();
+        const { offsetX, offsetY } = e;
+        const key = clickedOn(offsetX, offsetY);
+        if (key && actions[key]) actions[key]();
+      });
+
+      cnv.addEventListener('mousemove', function (e) {
+        if (!actxInitialized) audioInit();
+        const { offsetX, offsetY } = e;
+        const key = clickedOn(offsetX, offsetY);
+        if (key) cnv.style.cursor = 'pointer';
+        else cnv.style.cursor = 'initial';
+      });
+
+    </script>
+  </body>
+</html>
