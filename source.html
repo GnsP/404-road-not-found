@@ -42,7 +42,7 @@
 
       const SPRITE_COIN = "!!!!!````!!!!!!!!$0[KK[0$!!!!!$#/\\PL\\/#$!!!$#/,_KO[,/#$!!$#0+_KP[+.#$!$#$/+_JO\\+/\"#$$#$/+^:?\\+/\"#$$#$/+_:?\\+/\"#$$#$/+_^W`//\"#$!$#0+_^V`/.#$!!$#/*[[W_./#$!!!$#/ZV^^/#$!!!!!$0[[__0$!!!!!!!!````!!!!!";
 
-      const SPRITE_ICONS = "!!!$$-]]-$$!!!!$$//XUUX00$$!!$/'W[<<[W'0$!$/'ZW7777W['0$$/&ZV7_W7W['0$0'[V77_W77W[(00'[W77_W77W[(00W[777__??7[X0-X[77777777\\X-Q]8;77WW77<8]QQ]5<77WW78<5]QQQ=58;;;<85=QQQQQ]]XWXX]]QQQ!QQQQ]``]QQQQ!";
+      const SPRITE_ICONS = "!!!DD----$$!!!!$DOO(%%8@@4$!!$/G'+,<;770$!$/'*'''''7;'0$$/&JF'/'''+'0$0'KFGG/''''+(00GKGGGO''''[X00GKGGGO///'[X0-(KGGG''''',(-!-(KG''''',8=!!-%,'''''(,%=1!!=5(++[\\X%-!!!11=-('(HM-!!!!11!!-0PM!!!!Q";
 
       const SPRITE_VIRUS_HOUSE_GRASS = "]000--0//--00---!-(%%%%(%%(((%-!!-(()%((((%%%%-$#-%),,''/'0(-(/##0((+'''''''((-$$-%('&&&'&&'(%-A--0/...//..0/0-0!-('&&'''((('(0$$-('&&(''''''(-$#0('**,(''+++(-!3-%(+**&''*+<(0$!M%(K++''7KK,%-$!=H((H'''G,,,(-!!-8E%H((H()))8=!-08E%(%%%())LG/-----//0-000-----";
 
@@ -64,7 +64,7 @@
       const coin_frames = decode(SPRITE_COIN, 14, 14);
       coin_frames.push(mirrorFrame(coin_frames[1]));
 
-      const [heart, clock, warning] = decode(SPRITE_ICONS, 14, 14);
+      const [heart, clock, bloodstains] = decode(SPRITE_ICONS, 14, 14);
       const [virus, house, grass] = decode(SPRITE_VIRUS_HOUSE_GRASS, 16, 16);
 
       const font_3px_arr = decode(FONT_3PX, 5, 3, 1, 1);
@@ -172,8 +172,8 @@
 
       // GAME CONFIG
 
-      const screenWidth = Math.floor(window.innerWidth/100) * 100;
-      const screenHeight = Math.floor(window.innerHeight/100) * 100;
+      const screenWidth = Math.max(1000, Math.floor(window.innerWidth/100) * 100);
+      const screenHeight = Math.max(700, Math.floor(window.innerHeight/100) * 100);
       const mazeScaleFactor = 5;
       const boardScaleFactor = 2;
       const cellScaleFactor = mazeScaleFactor * boardScaleFactor;
@@ -198,7 +198,7 @@
           health, sightRadius, damageVector, showVirus, discoveryMode,
           curpos, viewport, clickables, optionsShown, gameWasRunning,
           buttons, lens, specs, map, mask, ppe, stage, level, levelText,
-          optionsTitle, showOptionsClose, xrayBoard;
+          optionsTitle, showOptionsClose, xrayBoard, damageLockCounter;
 
       level = 0;
       levelText = levelTexts[0];
@@ -222,7 +222,7 @@
 
         maze = copy2darr(mazeCopy);
         visible = get2darr(boardDim, boardDim, false);
-        xrayBoard = get2darr(boardDim, boardDim, false);
+        xrayBoard = get2darr(boardDim, boardDim, CLEAR);
 
         orientation = TOP;
         moving = false;
@@ -231,6 +231,7 @@
 
         lock = true;
         lockCounter = 0;
+        damageLockCounter = 0;
         moveStart = 0;
         timer = 0;
 
@@ -321,7 +322,7 @@
         xray: function () {
           clickables.xray = false;
           iter2d(curpos[0]-4, curpos[0]+5, curpos[1]-4, curpos[1]+5, function (p, q) {
-            xrayBoard[p][q] = true;
+            xrayBoard[p][q] = RED;
           });
         },
 
@@ -665,7 +666,7 @@
           let top_left_x = Math.floor((screenWidth - 300)/2);
           let top_left_y = Math.floor((screenHeight - 100)/2);
           ctx.fillRect(top_left_x, top_left_y, 300, 100);
-          drawFrame(top_left_x + 25, top_left_y + 30, warning, COLOR_WHITE, COLOR_SCARLET, COLOR_DARK_GRAY, 3);
+          drawFrame(top_left_x + 25, top_left_y + 30, virus, '#fd8', '#f80', '#a00', 3);
           drawText(top_left_x + 100, top_left_y + 40, message, COLOR_WHITE, 4);
         }
       }
@@ -958,26 +959,31 @@
 
         if (health > 0) {
           if (maze[i][j] === RED) {
-            if (lockCounter % 4 === 0) {
+            if (damageLockCounter % 4 === 0) {
               health -= damageVector[0];
               fls(COLOR_ORANGE_OVERLAY);
               if (gameRunning) playNotes([24, 25]);
             }
+            damageLockCounter += 1;
+            xrayBoard[i][j] = VIRUS;
             message = 'VIRUS ALERT';
           }
 
           if (maze[i][j] === VIRUS) {
-            if (lockCounter % 4 === 0){
+            if (damageLockCounter % 4 === 0){
               health -= damageVector[1];
               fls(COLOR_RED_OVERLAY);
               if (gameRunning) playNotes([24, 25]);
             }
+            damageLockCounter += 1;
+            xrayBoard[i][j] = VIRUS;
             message = 'VIRUS ALERT';
           }
         }
 
         if (maze[i][j] !== RED && maze[i][j] !== VIRUS) {
           message = '';
+          damageLockCounter = 0;
         }
 
         if (health <= 0) {
@@ -1102,7 +1108,7 @@
           for(let j=stj; j< stj + viewportWidth; j++) {
             let gradientFill = false;
 
-            if (xrayBoard[i][j]) {
+            if (xrayBoard[i][j] === RED) {
               ctx.fillStyle = COLOR_ORANGE_OVERLAY;
               ctx.fillRect((j-stj)*blockResolution, (i-sti)*blockResolution, blockResolution, blockResolution);
             }
@@ -1176,7 +1182,7 @@
               }
             }
 
-              if ((showVirus || xrayBoard[i][j]) && maze[i][j] === VIRUS) {
+            if ((showVirus || xrayBoard[i][j] === RED) && maze[i][j] === VIRUS) {
               let [dx, dy] = virusMovementSequence[lockCounter];
               drawFrame(
                 (j-stj) * blockResolution + dx * 20,
@@ -1185,12 +1191,23 @@
                 '#fd8', '#f80', '#a00', 2
               );
             }
+
             if (maze[i][j] === GRASS || ((maze[i][j] === VIRUS || maze[i][j] === RED) && (i+j) % 3 === 0) ) {
               drawFrame(
                 (j-stj) * blockResolution + 1,
                 (i-sti) * blockResolution + 1,
                 grass,
                 '#dc9', '#ac8', '#687'
+              );
+            }
+
+            if (xrayBoard[i][j] === VIRUS) {
+              drawFrame(
+                (j-stj) * blockResolution - 3,
+                (i-sti) * blockResolution - 3,
+                bloodstains,
+                COLOR_ORANGE_OVERLAY, COLOR_RED_OVERLAY, COLOR_SCARLET,
+                4,
               );
             }
 
