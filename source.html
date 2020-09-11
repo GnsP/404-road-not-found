@@ -17,7 +17,6 @@
   <body>
     <canvas id="c"></canvas>
     <script type="text/javascript">
-
       // SFX
 
       const bird1 = "/+MYxAAJoAZAAUAQAP///////////4Pv+XB8HwfeAAQDGsHwflAQBAEIPg+D4PggCAIBhZY03JLZFZVYpQBEV1F1ydiFUuzy/+MYxBQMUAJ6WYEQAJj9nX+jqWj1v+v2PHXsf/sEtv0ce92VhUFf9P+BFRz/////////////ppoIaZfN0y+SBKFwuGhcLhcL/+MYxB0Om2KEEcBoAYPcOWC1hzxoBOBtHu7Ohr/////06C1/WYGo9ypSigb62/qSSSS6tSSTrSXdAySNikUSClAQmC54cYEK/+MYxB0MQ2J8EARFZBa2gszd17f3lR//7pytM5adDHEl/y////f/P/88eY73Vyw5cjL5wAh4b8huCJ9z0HWtYTnLwZOf//4y/+MYxCcJsq5gAAgyuP//+uqcsuWJrGAZkpd0/NNmJdsl1U/fHy9Qdi2qfQp5WCHD8Tcumlj6RSMVaZCYYgF4AIAuhRXH8nI3/+MYxDsOc26AAALxhP/t3OlhLGqX0PXSWdMElVUKzIfwPQjHUx2jCGKZIj60oHD2opROkteCazoFUJiwD0Yo9rxSG5RVDD///+MYxDwOC2qICANzhf//////////////1pqV//9SP9cnibNqkNZdJkd4uMljMoFUpLMhng1MGwoPy6OMmyrP/////////////+MYxD4M+2agEUCAAf//////////7c6YJrTNJuOaMp6JVWiylE8y/r+kpI4DQiCAAGCAKjQMkUC4EQDAzH4Dqhf8hwYRDqIh/+MYxEUXC6JwAYGgAHxDoABQQiQWngFFv9a2JoxICQUvEqHw1f//v//9v//Q3//qX//0N/Uv6lK6lL/+htDGdQoC6lK1SlqU/+MYxCMK42oAAcAQAKVvlKVjAQEJZUxBTUUzLjEwMFVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVV";
@@ -28,7 +27,7 @@
 
       const ambient = "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";
 
-      let bird1Buffer, bird2Buffer, bird3Buffer, ambientBuffer, 
+      let bird1Buffer, bird2Buffer, bird3Buffer, ambientBuffer,
           actx, actxInitialized, birdGain, notesGain, ambientGain;
 
       // SPRITES
@@ -112,8 +111,8 @@
 
       const TREE_COLOR_SCHEMES = [
         [COLOR_PIXIE_GREEN, COLOR_SPROUT, COLOR_DONKEY_BROWN],
-        [COLOR_PIXIE_GREEN, COLOR_BUDDHA_GOLD, COLOR_DRIFTWOOD], 
-        [COLOR_SAND, COLOR_SHADOW_GREEN, COLOR_DRIFTWOOD], 
+        [COLOR_PIXIE_GREEN, COLOR_BUDDHA_GOLD, COLOR_DRIFTWOOD],
+        [COLOR_SAND, COLOR_SHADOW_GREEN, COLOR_DRIFTWOOD],
         [COLOR_SAND, COLOR_HUSK, COLOR_DONKEY_BROWN],
         [COLOR_FLAX, COLOR_HUSK, COLOR_DRIFTWOOD],
         [COLOR_FLAX, COLOR_TUMBLEWEED, COLOR_DONKEY_BROWN],
@@ -151,6 +150,7 @@
       const PPE = 4;
       const PILL = 5;
       const XRAY = 6;
+      const AXE = 7;
 
       const BUTTON_MAP = [
        [30, 'specs', 'increase', 'sight radius'],
@@ -160,6 +160,7 @@
        [50, 'ppe', 'reduce damage', 'to health'],
        [50, 'pill', 'restore health', 'upto 10 points'],
        [50, 'xray', 'show nearby', 'infected area'],
+       [10, 'axe', 'cut a tree', 'in front'],
       ];
 
 
@@ -211,29 +212,29 @@
       function initLevel () {
         mazeDim = 8 + 2 * level;
         levelText = levelTexts[level];
-        boardDimBase = getBoardDim(); 
+        boardDimBase = getBoardDim();
         boardDim = boardDimBase  * boardScaleFactor;
         [mazeCopy, start, target, treeMap] = newMaze(mazeDim, mazeDim);
       }
 
       function initGame (isNewGame) {
         if (isNewGame) initLevel();
-        
+
         maze = copy2darr(mazeCopy);
         visible = get2darr(boardDim, boardDim, false);
         xrayBoard = get2darr(boardDim, boardDim, false);
-        
+
         orientation = TOP;
         moving = false;
         message = '';
         gameRunning = true;
-        
+
         lock = true;
         lockCounter = 0;
         moveStart = 0;
         timer = 0;
-        
-        wealth = 0;
+
+        wealth = 20;
         health = 100;
         sightRadius = 2;
         damageVector = [4, 20];
@@ -243,7 +244,7 @@
         curpos = [...start];
         viewport = [curpos[0]-Math.floor(viewportHeight / 2), curpos[1]-Math.floor(viewportHeight / 2)];
         containViewport();
-        
+
         clickables = {
           options: [ screenWidth - 148, 10, 128, 20 ],
         };
@@ -324,6 +325,17 @@
           });
         },
 
+        axe: function () {
+          clickables.axe = false;
+          const [ti, tj] = treeFacing();
+          if (ti === null) return;
+          wealth -= 10;
+          maze[ti][tj] = CLEAR;
+          maze[ti+1][tj] = CLEAR;
+          maze[ti][tj+1] = CLEAR;
+          maze[ti+1][tj+1] = CLEAR;
+        },
+
         start: function () {
           clickables.start = false;
           clickables.levelUp = false;
@@ -367,6 +379,22 @@
         clickables['new map'] = false;
         clickables['main menu'] = false;
         optionsShown = false;
+      }
+
+      function treeFacing () {
+        let [i, j] = curpos;
+        if (orientation === TOP) i -= 1;
+        if (orientation === LEFT) j -= 1;
+        if (orientation === RIGHT) j += 1;
+        if (orientation === BOTTOM) i += 1;
+
+        if (maze[i][j] === TREE) {
+          let basei = i%2 === 0 ? i : i-1;
+          let basej = j%2 === 0 ? j : j-1;
+          return [basei, basej];
+        }
+
+        return [null, null];
       }
 
 
@@ -500,7 +528,7 @@
         let ch = _ch.toUpperCase();
         if (ch === '0') ch = 'O';
         if (ch === '5') ch = 'S';
-        
+
         let res = char_map_3px[ch];
         if (isDefined(res)) return [res, 3];
         res = char_map_4px[ch];
@@ -530,7 +558,7 @@
         let cx = x;
         let cy = y;
         let txt = text.toString();
-        
+
         for (let i=0; i<txt.length; i++) {
           let [matrix, width] = getCharRep(txt[i]);
           ctx.fillStyle = (isDefined(l) && i >= l && i < r) ? highlight : color;
@@ -547,7 +575,7 @@
       function audioInit () {
         const AudioContext = window.AudioContext || window.webkitAudioContext;
         actx = new AudioContext();
-        
+
         birdGain = actx.createGain();
         ambientGain = actx.createGain();
         notesGain = actx.createGain();
@@ -560,7 +588,7 @@
         birdGain.connect(dest);
         ambientGain.connect(dest);
         notesGain.connect(dest);
-        
+
         return Promise.all([
           makeAudioBuffer(bird1).then(buf => bird1Buffer = buf),
           makeAudioBuffer(bird2).then(buf => bird2Buffer = buf),
@@ -583,8 +611,8 @@
             osc.stop(now + i * 0.1 + 0.09);
             setTimeout(() => osc.disconnect(), (i+1) * 100);
           }
-        } 
-      } 
+        }
+      }
 
       function base64ToArrayBuffer(base64) {
         const binary_string = window.atob(base64);
@@ -643,7 +671,7 @@
       }
 
       function drawBuyButtons () {
-        buttons.length = 3;
+        buttons.length = 4;
         if (health < 100 && mask && ppe) buttons[0] = PILL;
         else if (mask && !ppe) buttons[0] = PPE;
         else if (!mask) buttons[0] = MASK;
@@ -654,8 +682,10 @@
         else if (!specs) buttons[1] = SPECS;
         else buttons[1] = null;
 
-        if (!showVirus) buttons[2] = LENS;
-        else buttons[2] = null;
+        buttons[2] = AXE;
+
+        if (!showVirus) buttons[3] = LENS;
+        else buttons[3] = null;
 
         let left_marker = screenWidth;
         buttons.map(function (button) {
@@ -680,10 +710,10 @@
         drawFrame(
           x + 16,
           y + 10,
-          coin_frames[0], 
-          disabled ? COLOR_LIGHT_GRAY : COLOR_LIGHT_GOLD, 
-          disabled ? '#aaa' : COLOR_GOLD, 
-          disabled ? '#777' : COLOR_GOLDEN_BROWN, 
+          coin_frames[0],
+          disabled ? COLOR_LIGHT_GRAY : COLOR_LIGHT_GOLD,
+          disabled ? '#aaa' : COLOR_GOLD,
+          disabled ? '#777' : COLOR_GOLDEN_BROWN,
           2,
         );
 
@@ -692,7 +722,7 @@
         drawText(x + 80, y + 10, title, textColor, 4);
         drawText(x + 80, y + 40, text1, textColor, 1.5);
         drawText(x + 80, y + 52, text2, textColor, 1.5);
-       
+
         if (!disabled) {
           if (!clickables[title]) clickables[title] = [x, y, btnWidth, btnHeight];
           else {
@@ -720,11 +750,11 @@
 
       function drawOptions () {
         fls(COLOR_MEDIUM_OVERLAY);
-        
+
         let modalWidth = 400, modalHeight = 300;
         let top_left_x = Math.floor((screenWidth - modalWidth)/2);
         let top_left_y = Math.floor((screenHeight - modalHeight)/2);
-        
+
         ctx.fillStyle = COLOR_DARK_OVERLAY;
         ctx.fillRect(top_left_x, top_left_y, modalWidth, modalHeight);
 
@@ -798,7 +828,7 @@
           }
         }
 
-        let board = get2darr(boardDim, boardDim, TREE); 
+        let board = get2darr(boardDim, boardDim, TREE);
         let treeMap = get2darr(boardDim, boardDim, 0);
         iterSq(0, boardDim, function (i, j) {
           treeMap[i][j] = [rnd(0, 6), rnd(0, 6)];
@@ -843,7 +873,7 @@
                   });
                   board[i+1][j+1] = VIRUS;
                 }
-              } 
+              }
             } else {
               if (rnd(0, levelDifficultyParams[level]) === 1) {
                 iter2d(i, i+3, j, j+3, function (p, q) {
@@ -991,7 +1021,7 @@
         drawText(60, 160, 'The germs could kill him right where he stood', COLOR_WHITE, 3, 4, 20, COLOR_GOLD);
         drawText(60, 185, 'So with the arrow keys if you could', COLOR_WHITE, 3, 12, 22, COLOR_GOLD);
         drawText(60, 210, 'Bring Timmy home safely to the north', COLOR_WHITE, 3, 0, 16, COLOR_GOLD);
-          
+
         drawText(60, 285, 'TIP 1: THE VIRUS IS INVISIBLE. STAY AWAY FROM IT.', COLOR_WHITE, 3, 0, 7, COLOR_SCARLET);
         drawText(60, 310, 'TIP 2: BUY XRAY OR LENS TO MAKE IT VISIBLE.', COLOR_WHITE, 3, 0, 7, COLOR_SCARLET);
 
@@ -1000,7 +1030,7 @@
         ctx.fillRect(40, baseY, 340, 120);
 
         drawText(60, baseY + 20, 'LEVEL', COLOR_WHITE, 3);
-        
+
         ctx.beginPath();
         ctx.moveTo(160, baseY + 27.5);
         ctx.lineTo(180, baseY + 20);
@@ -1059,8 +1089,8 @@
         res = res || (i-1 >= 0 && j-1 >= 0) && visible[i-1][j-1];
         res = res || (i-1 >= 0 && j+1 < boardDim) && visible[i-1][j+1];
         res = res || (i+1 < boardDim && j-1 >= 0) && visible[i+1][j-1];
-        res = res || (i+1 < boardDim && j+1 < boardDim) && visible[i+1][j+1]; 
-        
+        res = res || (i+1 < boardDim && j+1 < boardDim) && visible[i+1][j+1];
+
         return res;
       }
 
@@ -1080,26 +1110,26 @@
             if (maze[i][j] === TREE) {
               let basei = i%2 === 0 ? i : i-1;
               let basej = j%2 === 0 ? j : j-1;
-              
+
               if (!mp[`${basei},${basej}`]) {
                 let [frameIndex, colorSchemeIndex] = treeMap[basei][basej];
                 let [L, M, D] = TREE_COLOR_SCHEMES[colorSchemeIndex];
                 drawFrame(
-                  (basej-stj) * blockResolution, 
-                  (basei-sti) * blockResolution, 
-                  tree_frames[frameIndex], 
+                  (basej-stj) * blockResolution,
+                  (basei-sti) * blockResolution,
+                  tree_frames[frameIndex],
                   L, M, D, 6
                 );
                 mp[`${basei},${basej}`] = true;
               }
             }
-            
+
             if (maze[i][j] === END || maze[i][j] === HOUSE) {
               let [ti, tj] = target;
               drawFrame(
-                (tj-2-stj) * blockResolution + 3, 
-                (ti-2-sti) * blockResolution + 3, 
-                house, 
+                (tj-2-stj) * blockResolution + 3,
+                (ti-2-sti) * blockResolution + 3,
+                house,
                 COLOR_WHITE, '#f60', COLOR_DARK_GRAY, 9
               );
 
@@ -1131,12 +1161,12 @@
               const helperText = 'ENTER THROUGH THE DOOR';
               const helperTextLen = getWordLength(helperText) * 2;
               drawText(
-                bj + blockResolution - helperTextLen, 
-                bi + blockResolution + 20, 
+                bj + blockResolution - helperTextLen,
+                bi + blockResolution + 20,
                 helperText, COLOR_DARK_GRAY, 2
               );
             }
-            
+
             if (discoveryMode && !visible[i][j]) {
               gradientFill = getGradientFill(i, j);
               if (!gradientFill) {
@@ -1145,21 +1175,21 @@
                 continue;
               }
             }
-            
+
               if ((showVirus || xrayBoard[i][j]) && maze[i][j] === VIRUS) {
               let [dx, dy] = virusMovementSequence[lockCounter];
               drawFrame(
-                (j-stj) * blockResolution + dx * 20, 
-                (i-sti) * blockResolution + dy * 20, 
-                virus, 
+                (j-stj) * blockResolution + dx * 20,
+                (i-sti) * blockResolution + dy * 20,
+                virus,
                 '#fd8', '#f80', '#a00', 2
               );
             }
             if (maze[i][j] === GRASS || ((maze[i][j] === VIRUS || maze[i][j] === RED) && (i+j) % 3 === 0) ) {
               drawFrame(
-                (j-stj) * blockResolution + 1, 
-                (i-sti) * blockResolution + 1, 
-                grass, 
+                (j-stj) * blockResolution + 1,
+                (i-sti) * blockResolution + 1,
+                grass,
                 '#dc9', '#ac8', '#687'
               );
             }
@@ -1167,9 +1197,9 @@
             if (maze[i][j] === GOLD) {
               let frame = coin_frames[coin_frame_order[Math.floor(lockCounter/2)]];
               drawFrame(
-                (j-stj) * blockResolution + 4, 
-                (i-sti) * blockResolution + 4, 
-                frame, 
+                (j-stj) * blockResolution + 4,
+                (i-sti) * blockResolution + 4,
+                frame,
                 COLOR_LIGHT_GOLD, COLOR_GOLD, COLOR_GOLDEN_BROWN
               );
             }
@@ -1184,9 +1214,9 @@
 
             if (i === curpos[0] && j === curpos[1]) {
               drawFrame(
-                (j-stj) * blockResolution + 4, 
-                (i-sti) * blockResolution - 13, 
-                frame, 
+                (j-stj) * blockResolution + 4,
+                (i-sti) * blockResolution - 13,
+                frame,
                 COLOR_WHITE, '#fca', '#545'
               );
             }
