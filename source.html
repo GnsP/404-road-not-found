@@ -17,6 +17,7 @@
   <body>
     <canvas id="c"></canvas>
     <script type="text/javascript">
+
       // SFX
 
       const bird1 = "/+MYxAAJoAZAAUAQAP///////////4Pv+XB8HwfeAAQDGsHwflAQBAEIPg+D4PggCAIBhZY03JLZFZVYpQBEV1F1ydiFUuzy/+MYxBQMUAJ6WYEQAJj9nX+jqWj1v+v2PHXsf/sEtv0ce92VhUFf9P+BFRz/////////////ppoIaZfN0y+SBKFwuGhcLhcL/+MYxB0Om2KEEcBoAYPcOWC1hzxoBOBtHu7Ohr/////06C1/WYGo9ypSigb62/qSSSS6tSSTrSXdAySNikUSClAQmC54cYEK/+MYxB0MQ2J8EARFZBa2gszd17f3lR//7pytM5adDHEl/y////f/P/88eY73Vyw5cjL5wAh4b8huCJ9z0HWtYTnLwZOf//4y/+MYxCcJsq5gAAgyuP//+uqcsuWJrGAZkpd0/NNmJdsl1U/fHy9Qdi2qfQp5WCHD8Tcumlj6RSMVaZCYYgF4AIAuhRXH8nI3/+MYxDsOc26AAALxhP/t3OlhLGqX0PXSWdMElVUKzIfwPQjHUx2jCGKZIj60oHD2opROkteCazoFUJiwD0Yo9rxSG5RVDD///+MYxDwOC2qICANzhf//////////////1pqV//9SP9cnibNqkNZdJkd4uMljMoFUpLMhng1MGwoPy6OMmyrP/////////////+MYxD4M+2agEUCAAf//////////7c6YJrTNJuOaMp6JVWiylE8y/r+kpI4DQiCAAGCAKjQMkUC4EQDAzH4Dqhf8hwYRDqIh/+MYxEUXC6JwAYGgAHxDoABQQiQWngFFv9a2JoxICQUvEqHw1f//v//9v//Q3//qX//0N/Uv6lK6lL/+htDGdQoC6lK1SlqU/+MYxCMK42oAAcAQAKVvlKVjAQEJZUxBTUUzLjEwMFVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVV";
@@ -83,6 +84,7 @@
       const COLOR_DARK_GRAY = 'rgba( 85, 85, 85, 1 )';
       const COLOR_DARK_OVERLAY = '#000a';
       const COLOR_MEDIUM_OVERLAY = '#0006';
+      const COLOR_LIGHT_GRAY = '#ddd';
 
       const COLOR_CHAMPAIGN = '#fed';
       const COLOR_SCARLET = '#f20';
@@ -148,14 +150,16 @@
       const MASK = 3;
       const PPE = 4;
       const PILL = 5;
+      const XRAY = 6;
 
       const BUTTON_MAP = [
        [30, 'specs', 'increase', 'sight radius'],
-       [50, 'map', 'remove visual', 'blocking'],
-       [100, 'lens', 'make virus', 'visible'],
+       [50, 'map', 'reveal all', 'of the map'],
+       [150, 'lens', 'make virus', 'visible'],
        [30, 'mask', 'reduce damage', 'to health'],
        [50, 'ppe', 'reduce damage', 'to health'],
        [50, 'pill', 'restore health', 'upto 10 points'],
+       [50, 'xray', 'show nearby', 'infected area'],
       ];
 
 
@@ -193,7 +197,7 @@
           health, sightRadius, damageVector, showVirus, discoveryMode,
           curpos, viewport, clickables, optionsShown, gameWasRunning,
           buttons, lens, specs, map, mask, ppe, stage, level, levelText,
-          optionsTitle, showOptionsClose;
+          optionsTitle, showOptionsClose, xrayBoard;
 
       level = 0;
       levelText = levelTexts[0];
@@ -217,6 +221,7 @@
         
         maze = copy2darr(mazeCopy);
         visible = get2darr(boardDim, boardDim, false);
+        xrayBoard = get2darr(boardDim, boardDim, false);
         
         orientation = TOP;
         moving = false;
@@ -310,6 +315,13 @@
           clickables.pill = false;
           wealth -= 50;
           health = Math.min(health + 10, 100);
+        },
+
+        xray: function () {
+          clickables.xray = false;
+          iter2d(curpos[0]-4, curpos[0]+5, curpos[1]-4, curpos[1]+5, function (p, q) {
+            xrayBoard[p][q] = true;
+          });
         },
 
         start: function () {
@@ -514,14 +526,14 @@
         return len;
       }
 
-      function drawText (x, y, text, color, size) {
-        ctx.fillStyle = color;
+      function drawText (x, y, text, color, size, l, r, highlight) {
         let cx = x;
         let cy = y;
         let txt = text.toString();
         
         for (let i=0; i<txt.length; i++) {
           let [matrix, width] = getCharRep(txt[i]);
+          ctx.fillStyle = (isDefined(l) && i >= l && i < r) ? highlight : color;
           iter2d(0, 5, 0, width, function (j, k) {
             if (matrix[j][k]) ctx.fillRect(k*size + cx, j*size + cy, size, size);
           });
@@ -631,51 +643,62 @@
       }
 
       function drawBuyButtons () {
-        buttons.length = 0;
-        if (wealth >= 30) {
-          if (!specs) buttons.push(SPECS);
-          if (!mask) buttons.push(MASK);
-        }
-        if (wealth >= 50) {
-          if (specs && !map) buttons.push(MAP);
-          if (mask && !ppe) buttons.push(PPE);
-          if (health < 100) buttons.push(PILL);
-        }
-        if (wealth >= 100 && specs && map && !lens) buttons.push(LENS);
+        buttons.length = 3;
+        if (health < 100 && mask && ppe) buttons[0] = PILL;
+        else if (mask && !ppe) buttons[0] = PPE;
+        else if (!mask) buttons[0] = MASK;
+        else buttons[0] = null;
+
+        if (specs && map) buttons[1] = XRAY;
+        else if (specs && !map) buttons[1] = MAP;
+        else if (!specs) buttons[1] = SPECS;
+        else buttons[1] = null;
+
+        if (!showVirus) buttons[2] = LENS;
+        else buttons[2] = null;
 
         let left_marker = screenWidth;
         buttons.map(function (button) {
+          if (button === null) return;
           left_marker -= 205;
           let [cost, title, text1, text2] = BUTTON_MAP[button];
-          drawBuyButton(left_marker, screenHeight - 90, cost, title, text1, text2);
+          drawBuyButton(left_marker, screenHeight - 90, cost, title, text1, text2, cost > wealth);
         });
       }
 
-      function drawBuyButton (x, y, cost, title, text1, text2) {
+      function drawBuyButton (x, y, cost, title, text1, text2, disabled) {
         const btnWidth = 185, btnHeight = 70;
         ctx.beginPath();
         ctx.rect(x, y, btnWidth, btnHeight);
         ctx.fillStyle = COLOR_DARK_OVERLAY;
         ctx.fill();
-        ctx.strokeStyle = COLOR_SCARLET;
+        ctx.strokeStyle = disabled ? COLOR_DARK_GRAY : COLOR_SCARLET;
         ctx.stroke();
         ctx.closePath();
-        ctx.fillStyle = COLOR_SCARLET;
+        ctx.fillStyle = disabled ? COLOR_DARK_GRAY : COLOR_SCARLET;
         ctx.fillRect(x + 60, y, 1, btnHeight);
         drawFrame(
           x + 16,
           y + 10,
           coin_frames[0], 
-          COLOR_LIGHT_GOLD, COLOR_GOLD, COLOR_GOLDEN_BROWN, 2
+          disabled ? COLOR_LIGHT_GRAY : COLOR_LIGHT_GOLD, 
+          disabled ? '#aaa' : COLOR_GOLD, 
+          disabled ? '#777' : COLOR_GOLDEN_BROWN, 
+          2,
         );
-        drawText(x + (cost === 100 ? 10: 18), y + 45, cost, COLOR_WHITE, 3);
-        drawText(x + 90, y + 10, title, COLOR_WHITE, 4);
-        drawText(x + 90, y + 40, text1, COLOR_WHITE, 1.5);
-        drawText(x + 90, y + 52, text2, COLOR_WHITE, 1.5);
-        if (!clickables[title]) clickables[title] = [x, y, btnWidth, btnHeight];
-        else {
-          clickables[title][0] = x;
-          clickables[title][1] = y;
+
+        const textColor = disabled ? '#aaaa' : COLOR_WHITE;
+        drawText(x + (cost === 150 ? 11.5 : 18), y + 45, cost, textColor, 3);
+        drawText(x + 80, y + 10, title, textColor, 4);
+        drawText(x + 80, y + 40, text1, textColor, 1.5);
+        drawText(x + 80, y + 52, text2, textColor, 1.5);
+       
+        if (!disabled) {
+          if (!clickables[title]) clickables[title] = [x, y, btnWidth, btnHeight];
+          else {
+            clickables[title][0] = x;
+            clickables[title][1] = y;
+          }
         }
       }
 
@@ -798,7 +821,7 @@
           }
         });
 
-        iterSq(borderWidthBase*2, boardDimBase - borderWidthBase*2, function (_i, _j) {
+        iterSq(borderWidthBase, boardDimBase - borderWidthBase, function (_i, _j) {
           let i = _i * boardScaleFactor, j = _j * boardScaleFactor;
           if (board[i][j] === TREE && rnd(0,3) === 1) {
             board[i][j] = CLEAR;
@@ -807,15 +830,23 @@
             board[i+1][j+1] = CLEAR;
           } else {
             if ((board[i+2][j] === TREE || board[i-2][j] === TREE || board[i][j+2] === TREE || board[i][j-2] === TREE)) {
-              if (board[i][j] !== VIRUS && board[i][j] !== RED && rnd(0,3) === 1) {
+              const rndval = rnd(0,3);
+              if (board[i][j] !== VIRUS && rndval === 1) {
                 board[i][j] = TREE;
                 board[i+1][j] = TREE;
                 board[i][j+1] = TREE;
                 board[i+1][j+1] = TREE;
-              }
+              } else if (rndval === 2) {
+                if (rnd(0, levelDifficultyParams[level]) === 1) {
+                  iter2d(i, i+3, j, j+3, function (p, q) {
+                    if (board[p][q] !== TREE) board[p][q] = RED;
+                  });
+                  board[i+1][j+1] = VIRUS;
+                }
+              } 
             } else {
               if (rnd(0, levelDifficultyParams[level]) === 1) {
-                iter2d(i, i+2, j, j+2, function (p, q) {
+                iter2d(i, i+3, j, j+3, function (p, q) {
                   board[p][q] = RED;
                 });
                 board[i+1][j+1] = VIRUS;
@@ -953,13 +984,16 @@
         fls(COLOR_MEDIUM_OVERLAY);
 
         ctx.fillStyle = COLOR_DARK_OVERLAY;
-        ctx.fillRect(40, 40, 715, 220);
+        ctx.fillRect(40, 40, 715, 310);
         drawText(60, 60, '404 : ROAD NOT FOUND', COLOR_SCARLET, 5);
         drawText(60, 110, 'All roads vanished in a yellow wood', COLOR_WHITE, 3);
-        drawText(60, 135, 'Timmy is lost and can not move forth', COLOR_WHITE, 3);
-        drawText(60, 160, 'The germs could kill him right where he stood', COLOR_WHITE, 3);
-        drawText(60, 185, 'So with the arrow keys if you could', COLOR_WHITE, 3);
-        drawText(60, 210, 'Bring Timmy home safely to the north', COLOR_WHITE, 3);
+        drawText(60, 135, 'Timmy is lost and can not move forth', COLOR_WHITE, 3, 0, 13, COLOR_GOLD);
+        drawText(60, 160, 'The germs could kill him right where he stood', COLOR_WHITE, 3, 4, 20, COLOR_GOLD);
+        drawText(60, 185, 'So with the arrow keys if you could', COLOR_WHITE, 3, 12, 22, COLOR_GOLD);
+        drawText(60, 210, 'Bring Timmy home safely to the north', COLOR_WHITE, 3, 0, 16, COLOR_GOLD);
+          
+        drawText(60, 285, 'TIP 1: THE VIRUS IS INVISIBLE. STAY AWAY FROM IT.', COLOR_WHITE, 3, 0, 7, COLOR_SCARLET);
+        drawText(60, 310, 'TIP 2: BUY XRAY OR LENS TO MAKE IT VISIBLE.', COLOR_WHITE, 3, 0, 7, COLOR_SCARLET);
 
         const baseY = screenHeight - 160;
         ctx.fillStyle = COLOR_DARK_OVERLAY;
@@ -1037,7 +1071,12 @@
         for (let i=sti; i< sti + viewportHeight; i++) {
           for(let j=stj; j< stj + viewportWidth; j++) {
             let gradientFill = false;
-          
+
+            if (xrayBoard[i][j]) {
+              ctx.fillStyle = COLOR_ORANGE_OVERLAY;
+              ctx.fillRect((j-stj)*blockResolution, (i-sti)*blockResolution, blockResolution, blockResolution);
+            }
+
             if (maze[i][j] === TREE) {
               let basei = i%2 === 0 ? i : i-1;
               let basej = j%2 === 0 ? j : j-1;
@@ -1107,7 +1146,7 @@
               }
             }
             
-            if (showVirus && maze[i][j] === VIRUS) {
+              if ((showVirus || xrayBoard[i][j]) && maze[i][j] === VIRUS) {
               let [dx, dy] = virusMovementSequence[lockCounter];
               drawFrame(
                 (j-stj) * blockResolution + dx * 20, 
@@ -1116,7 +1155,7 @@
                 '#fd8', '#f80', '#a00', 2
               );
             }
-            if (maze[i][j] === GRASS) {
+            if (maze[i][j] === GRASS || ((maze[i][j] === VIRUS || maze[i][j] === RED) && (i+j) % 3 === 0) ) {
               drawFrame(
                 (j-stj) * blockResolution + 1, 
                 (i-sti) * blockResolution + 1, 
